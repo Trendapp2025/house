@@ -8,10 +8,11 @@ import { zones } from '@/data/mock';
 import { money } from '@/lib/repository';
 import { ListingPhoto } from './listing-detail';
 import { PropertyPhoto } from './property-card';
+import { IconButton } from './ui';
 import { Plus, Minus, LocateFixed } from 'lucide-react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-export function PurchaseMap({listings,zone,onZone}:{listings:PortalListing[];zone:string;onZone:(id:string)=>void}) {
+export function PurchaseMap({listings,zone,onZone,market='sale'}:{market?:'sale'|'rent';listings:PortalListing[];zone:string;onZone:(id:string)=>void}) {
  const container=useRef<HTMLDivElement>(null), map=useRef<GLMap|null>(null);
  const [ready,setReady]=useState(false),[error,setError]=useState(false);
  const [selection,setSelection]=useState<PortalListing|null>(null),[host,setHost]=useState<HTMLDivElement|null>(null);
@@ -38,6 +39,7 @@ export function PurchaseMap({listings,zone,onZone}:{listings:PortalListing[];zon
  },[]);
  useEffect(()=>{
   if(!ready||!map.current)return;
+  container.current?.querySelectorAll<HTMLButtonElement>('.purchase-zone-label').forEach(el=>el.setAttribute('aria-pressed',String(el.textContent===zones.find(z=>z.id===zone)?.name)));
   const z=zones.find(z=>z.id===zone);
   if(z)map.current.easeTo({center:z.center,zoom:14.2,duration:500});else recenter();
  },[zone,ready]);
@@ -49,7 +51,7 @@ export function PurchaseMap({listings,zone,onZone}:{listings:PortalListing[];zon
    const counts=new Map<string,number>();
    listings.forEach(l=>{
     const key=l.location.coordinates.join(',');const index=counts.get(key)??0;counts.set(key,index+1);
-    const el=document.createElement('button');el.className='purchase-price-marker'+(l.status==='demo'?' is-demo':'');el.textContent='€'+money(l.price);el.setAttribute('aria-label',`Apri ${l.title}, € ${money(l.price)}${l.status==='demo'?', demo':''}`);
+    const el=document.createElement('button');el.className='purchase-price-marker'+(l.status==='demo'?' is-demo':'');el.dataset.listingId=l.id;el.textContent='€'+money(l.price)+(l.market==='rent'?'/mese':'');el.setAttribute('aria-label',`Apri ${l.title}, € ${money(l.price)}${l.status==='demo'?', demo':''}`);
     el.onclick=e=>{e.stopPropagation();setSelection(l);};
     // Stack shared zone positions in screen pixels; never invent new coordinates.
     markers.push(new Marker({element:el,offset:[0,index*42]}).setLngLat(l.location.coordinates).addTo(map.current!));
@@ -57,6 +59,7 @@ export function PurchaseMap({listings,zone,onZone}:{listings:PortalListing[];zon
   });
   return()=>{disposed=true;markers.forEach(m=>m.remove());};
  },[listings,ready]);
+ useEffect(()=>{container.current?.querySelectorAll<HTMLButtonElement>('.purchase-price-marker').forEach(el=>{el.classList.toggle('is-selected',el.dataset.listingId===selection?.id);el.setAttribute('aria-pressed',String(el.dataset.listingId===selection?.id));});},[selection]);
  useEffect(()=>{if(selection&&!listings.some(l=>l.id===selection.id))setSelection(null);},[listings,selection]);
  useEffect(()=>{
   if(!selection||!map.current)return;
@@ -66,9 +69,10 @@ export function PurchaseMap({listings,zone,onZone}:{listings:PortalListing[];zon
    const element=document.createElement('div');setHost(element);
    map.current.easeTo({center:selection.location.coordinates,offset:[0,155],duration:350});
    current=new Popup({anchor:'bottom',maxWidth:'290px',offset:24,closeOnClick:false,className:'purchase-popup'}).setLngLat(selection.location.coordinates).setDOMContent(element).addTo(map.current);
+   current.getElement().querySelector('button.maplibregl-popup-close-button')?.setAttribute('aria-label','Chiudi anteprima');
    current.on('close',()=>{if(!disposed)setSelection(null);});popup.current=current;
   });
   return()=>{disposed=true;current?.remove();setHost(null);};
  },[selection]);
- return <section className="purchase-map container" aria-label="Immobili in vendita sulla mappa di Carmagnola"><div className="purchase-map-canvas" ref={container}/><div className="purchase-map-caption" hidden={!!selection}><strong>Carmagnola</strong><span>{listings.length} immobili · clicca un prezzo</span></div><div className="purchase-map-controls"><button aria-label="Aumenta zoom" disabled={!ready} onClick={()=>map.current?.zoomIn()}><Plus size={20}/></button><button aria-label="Riduci zoom" disabled={!ready} onClick={()=>map.current?.zoomOut()}><Minus size={20}/></button><button aria-label="Ricentra su Carmagnola" disabled={!ready} onClick={recenter}><LocateFixed size={20}/></button></div><span className="purchase-map-note">Posizioni indicative di zona · prezzi demo contrassegnati con •</span>{!ready&&!error&&<p className="purchase-map-message">Caricamento mappa…</p>}{error&&<p className="purchase-map-message" role="status">Cartografia non disponibile. Gli annunci restano consultabili sotto la mappa.</p>}{host&&selection&&createPortal(<article className="purchase-mini-card"><div className="purchase-mini-photo">{selection.preview?<PropertyPhoto property={selection.preview}/>:<ListingPhoto listing={selection}/>}</div><div className="purchase-mini-copy"><small>{selection.status==='demo'?'ANNUNCIO DEMO':'ANNUNCIO REALE'} · {selection.zoneName}</small><strong>€ {money(selection.price)}</strong><h3>{selection.title}</h3><p>{selection.propertyType}</p><p>{selection.areaSqm} m² · {selection.rooms} locali · {selection.bathrooms} bagni</p><Link href={'/immobili/'+selection.id}>Vedi scheda immobile →</Link></div></article>,host)}</section>;
+ return <section className="purchase-map container" aria-label={market==='sale'?'Immobili in vendita sulla mappa di Carmagnola':'Immobili in affitto sulla mappa di Carmagnola'}><div className="purchase-map-canvas" ref={container}/><div className="purchase-map-caption" hidden={!!selection}><strong>Carmagnola</strong><span>{listings.length} {listings.length===1?'immobile':'immobili'} · clicca un prezzo</span></div><div className="purchase-map-controls"><IconButton label="Aumenta zoom" disabled={!ready} onClick={()=>map.current?.zoomIn()}><Plus size={20}/></IconButton><IconButton label="Riduci zoom" disabled={!ready} onClick={()=>map.current?.zoomOut()}><Minus size={20}/></IconButton><IconButton label="Ricentra su Carmagnola" disabled={!ready} onClick={recenter}><LocateFixed size={20}/></IconButton></div><span className="purchase-map-note">Posizioni indicative di zona · annunci demo indicati</span>{!ready&&!error&&<p className="purchase-map-message">Caricamento mappa…</p>}{error&&<p className="purchase-map-message" role="status">Cartografia non disponibile. Gli annunci restano consultabili sotto la mappa.</p>}{host&&selection&&createPortal(<article className="purchase-mini-card"><div className="purchase-mini-photo">{selection.preview?<PropertyPhoto property={selection.preview}/>:<ListingPhoto listing={selection}/>}</div><div className="purchase-mini-copy"><small>{selection.status==='demo'?'ANNUNCIO DEMO':'FONTE REALE · DATI DICHIARATI'} · {selection.zoneName}</small><strong>€ {money(selection.price)}{selection.market==='rent'&&<small> /mese</small>}</strong><h3>{selection.title}</h3><p>{selection.propertyType}</p><p>{selection.areaSqm} m² · {selection.rooms} locali · {selection.bathrooms} {selection.bathrooms===1?'bagno':'bagni'}</p><Link href={'/immobili/'+selection.id}>Vedi scheda immobile →</Link></div></article>,host)}</section>;
 }

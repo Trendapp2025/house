@@ -1,0 +1,92 @@
+{
+  "verifiedAt": "2026-10-05T23:35:40.900Z",
+  "productionTablesUnchanged": true,
+  "integrationExitCode": 0,
+  "postgis": "3.3 USE_GEOS=1 USE_PROJ=1 USE_STATS=1",
+  "tables": {
+    "address": {
+      "count": 4367,
+      "checksum": "162dadb7f1695e80b40bbfde14426de8"
+    },
+    "address_point": {
+      "count": 4367,
+      "checksum": "a7126ddaa8587fe8ada8077345276ec9"
+    },
+    "building": {
+      "count": 8496,
+      "checksum": "25f72e1944432c1aa74fdcd4061ac34c"
+    },
+    "dataset_head": {
+      "count": 1,
+      "checksum": "a172e86f931c4aad42a7a955e43db78d"
+    },
+    "dataset_version": {
+      "count": 2,
+      "checksum": "491c0b40f98ebf66d2c38d5e8a63f9df"
+    },
+    "energy_certificate": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "estimate_run": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "estimate_run_dataset": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "import_record": {
+      "count": 19346,
+      "checksum": "e642fb1c527a79273cf6e404d6769e32"
+    },
+    "import_report": {
+      "count": 4,
+      "checksum": "bb2a2ccfb7721bbb31e009638d389511"
+    },
+    "listing": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "listing_revision": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "market_observation": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "municipality": {
+      "count": 1,
+      "checksum": "6718a128b80682abb08ece0d0a11297c"
+    },
+    "omi_quote": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "property": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "property_observation": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "property_territorial_link": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "schema_migration": {
+      "count": 2,
+      "checksum": "c8f5466523ff626b8e0e4f049f2276c3"
+    },
+    "source": {
+      "count": 2,
+      "checksum": "1772750309bbd09214f165278b0d1d1b"
+    },
+    "territorial_feature": {
+      "count": 527,
+      "checksum": "81a6bed2baf18deab04f39bd873c5a8c"
+    }
+  }
+}
