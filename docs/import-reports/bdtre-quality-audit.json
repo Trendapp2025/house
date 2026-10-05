@@ -1,0 +1,111 @@
+{
+  "addresses": [
+    {
+      "total": 4367,
+      "missing_street": 0,
+      "missing_number": 0,
+      "with_suffix": 520
+    }
+  ],
+  "links": [
+    {
+      "status": "unresolved",
+      "n": 4036
+    },
+    {
+      "status": "approximate_access",
+      "n": 4
+    },
+    {
+      "status": "unique_spatial_candidate",
+      "n": 327
+    }
+  ],
+  "validity": [
+    {
+      "entity": "building",
+      "invalid": 0,
+      "srids": 1
+    },
+    {
+      "entity": "access",
+      "invalid": 0,
+      "srids": 1
+    }
+  ],
+  "scope": [
+    {
+      "access_outside": 0
+    }
+  ],
+  "dataset": [
+    {
+      "import_status": "completed",
+      "acquired_at": "2026-10-05T00:39:01.406Z",
+      "version": "snapshot-2026-10-05T00:39:01.406Z"
+    }
+  ],
+  "realEvidence": [
+    {
+      "properties": "0",
+      "market": "0"
+    }
+  ],
+  "finalCounts": [
+    {
+      "buildings": "8496",
+      "access_points": "4367",
+      "territorial": "527",
+      "staged": "19345"
+    }
+  ],
+  "geographicTypes": [
+    {
+      "f_table_name": "building",
+      "type": "MULTIPOLYGON",
+      "srid": 4326
+    },
+    {
+      "f_table_name": "address_point",
+      "type": "POINT",
+      "srid": 4326
+    },
+    {
+      "f_table_name": "property",
+      "type": "POINT",
+      "srid": 4326
+    },
+    {
+      "f_table_name": "territorial_feature",
+      "type": "GEOMETRY",
+      "srid": 4326
+    },
+    {
+      "f_table_name": "market_observation",
+      "type": "POINT",
+      "srid": 4326
+    }
+  ],
+  "spatialIndexes": [
+    {
+      "indexname": "building_geometry_idx"
+    },
+    {
+      "indexname": "address_point_geometry_idx"
+    },
+    {
+      "indexname": "property_geometry_idx"
+    },
+    {
+      "indexname": "territorial_geometry_idx"
+    }
+  ],
+  "migrations": [
+    {
+      "name": "001_foundation.sql"
+    },
+    {
+      "name": "002_bdtre_import.sql"
+    }
+  ]
+}

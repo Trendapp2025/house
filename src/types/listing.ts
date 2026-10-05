@@ -1,0 +1,32 @@
+export interface SaleListing {
+  id: string;
+  sellerType?: 'agency' | 'private';
+  areaId: string;
+  zoneName: string;
+  status: 'demo' | 'real';
+  title: string;
+  price: number;
+  areaSqm: number;
+  rooms: number;
+  bathrooms: number;
+  location: { label: string; coordinates: [longitude: number, latitude: number]; precision: 'zone' | 'address' };
+  description: string;
+  propertyType: string;
+  condition: string;
+  floor: string;
+  totalFloors: number | null;
+  lift: boolean | null;
+  yearBuilt: number | null;
+  energyClass: string | null;
+  energyConsumption: number | null;
+  energyConsumptionLabel?: string;
+  heating: string | null;
+  condominiumMonthly: number | null;
+  availability: string | null;
+  features: string[];
+  photos: { src: string; alt: string }[];
+  floorPlanUrl: string | null;
+  contact: { name: string; phone: string | null; email: string | null } | null;
+  sourceUrl: string | null;
+  updatedAt: string | null;
+}

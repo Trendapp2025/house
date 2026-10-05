@@ -1,0 +1,49 @@
+{
+  "name": "houseid",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1",
+    "db:migrate": "node --conditions=react-server --import tsx scripts/db/cli.ts migrate",
+    "db:seed": "node --conditions=react-server --import tsx scripts/db/cli.ts seed",
+    "test:data": "node --conditions=react-server --import tsx --test scripts/test-data.test.ts",
+    "test:db": "node --conditions=react-server --import tsx --test scripts/test-db.test.ts",
+    "typecheck": "tsc --noEmit",
+    "test:domain": "node scripts/test-property-domain.mjs",
+    "test:finance": "node scripts/test-purchase-finance.mjs",
+    "test": "npm run test:domain && npm run test:finance && npm run test:data && npm run test:bdtre",
+    "postinstall": "node scripts/map-worker.mjs",
+    "predev": "node scripts/map-worker.mjs",
+    "prebuild": "node scripts/map-worker.mjs",
+    "test:bdtre": "node --conditions=react-server --import tsx --test scripts/test-bdtre.test.ts",
+    "db:acquire:bdtre": "node scripts/db/acquire-bdtre.mjs",
+    "db:import:bdtre": "node --conditions=react-server --import tsx scripts/db/import-bdtre.ts"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.468.0",
+    "maplibre-gl": "^6.11.2",
+    "next": "^15.5.0",
+    "pg": "^8.23.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/leaflet": "^1.9.22",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tailwindcss": "^4.1.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.8.0"
+  },
+  "overrides": {
+    "postcss": "8.5.23"
+  }
+}

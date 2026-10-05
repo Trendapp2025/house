@@ -1,0 +1,63 @@
+{
+  "datasetVersionId": "bdtre-carmagnola-1f73a6c39fcf950f493b",
+  "sourceRead": 19631,
+  "duplicates": 286,
+  "unique": 19345,
+  "layers": [
+    {
+      "layer": "acc_pc",
+      "read_unique": 6222,
+      "valid": 4367,
+      "inserted": 4367,
+      "updated": 0,
+      "unchanged": 0,
+      "rejected": 1855,
+      "invalid_geometry": 0,
+      "outside_municipality": 1855
+    },
+    {
+      "layer": "comune",
+      "read_unique": 1,
+      "valid": 1,
+      "inserted": 1,
+      "updated": 0,
+      "unchanged": 0,
+      "rejected": 0,
+      "invalid_geometry": 0,
+      "outside_municipality": 0
+    },
+    {
+      "layer": "edifc",
+      "read_unique": 12372,
+      "valid": 8496,
+      "inserted": 8496,
+      "updated": 0,
+      "unchanged": 0,
+      "rejected": 3876,
+      "invalid_geometry": 0,
+      "outside_municipality": 3876
+    },
+    {
+      "layer": "tp_str",
+      "read_unique": 750,
+      "valid": 526,
+      "inserted": 526,
+      "updated": 0,
+      "unchanged": 0,
+      "rejected": 224,
+      "invalid_geometry": 0,
+      "outside_municipality": 224
+    }
+  ],
+  "access": {
+    "access_points": 4367,
+    "with_coordinates": 4367,
+    "linked_buildings": 327,
+    "approximate": 4,
+    "missing_number": 0
+  },
+  "absentFromPrevious": 0,
+  "extent4326": "BOX(7.646691870040463 44.73243940939127,7.822814895937528 44.91815097225032)",
+  "coveragePercent": null,
+  "previousVersion": null
+}
