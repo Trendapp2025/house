@@ -2,21 +2,100 @@
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight, MapPin, Layers, FileSearch, ScanLine, Check } from 'lucide-react';
+import { ArrowRight, MapPin, Layers, FileSearch, ScanLine } from 'lucide-react';
 import { PortalShell } from './portal-shell';
 import { PortalCard } from './portal-card';
 import { PurchaseMap } from './purchase-map';
-import { Badge, Button, EstimatePlaceholder } from './ui';
+import { Badge, Button } from './ui';
 import { catalogue } from '@/data/catalogue';
 import type { Market } from '@/types/real-estate';
-const benefits=[{Icon:MapPin,title:'Parti dal territorio',text:'Scegli tra centro e borghi, poi esplora gli annunci sulla mappa.'},{Icon:FileSearch,title:'Conosci quello che acquisti',text:'Spazi, documenti e costi: approfondisci le informazioni disponibili per ogni casa.'},{Icon:Layers,title:'Distingui i dati dalle ipotesi',text:'Fonti e limiti espliciti. Un dato mancante resta un dato da verificare.'}];
-export function PortalHome(){
- const [market,setMarket]=useState<Market>('sale');const [query,setQuery]=useState('');const [max,setMax]=useState('');const [zone,setZone]=useState('');const router=useRouter();
- const listings=useMemo(()=>catalogue.filter(l=>l.market===market&&(!zone||l.areaId===zone)),[market,zone]);
- const featured=useMemo(()=>catalogue.filter(l=>l.market===market).sort((a,b)=>Number(b.status==='real')-Number(a.status==='real')||Number(!!b.sponsored)-Number(!!a.sponsored)).slice(0,4),[market]);
- const route=market==='sale'?'/acquisto':'/affitto';
- return <PortalShell><main id="contenuto"><section className="id-hero"><div className="container id-hero-grid"><div><Badge><MapPin size={14}/>Si parte da Carmagnola</Badge><h1>Trova casa.<br/><em>Capisci il prezzo.</em></h1><p className="id-hero-description">Annunci e dati territoriali, insieme. Per conoscere meglio la casa, prima di sceglierla.</p><p className="id-hero-support">Informazioni di mercato quando disponibili, fonti trasparenti e, in futuro, stime proprietarie.</p></div><aside className="id-hero-aside"><span className="id-overline">IL METODO HOUSEID</span><ScanLine size={36}/><h2>Più contesto.<br/>Più consapevolezza.</h2><ul><li><Check size={17}/>Informazioni dichiarate riconoscibili</li><li><Check size={17}/>Dati territoriali da fonti pubbliche</li><li><Check size={17}/>Limiti e informazioni mancanti espliciti</li></ul><a href="#come-funziona">Scopri come funziona <ArrowRight size={17}/></a></aside></div><form className="container id-search" onSubmit={e=>{e.preventDefault();const params=new URLSearchParams();if(query)params.set('q',query);if(max)params.set('max',max);router.push(route+'?'+params.toString());}}><div className="portal-tabs" aria-label="Tipo di ricerca"><button type="button" aria-pressed={market==='sale'} onClick={()=>{setMarket('sale');setMax('');setZone('');}}>Acquista</button><button type="button" aria-pressed={market==='rent'} onClick={()=>{setMarket('rent');setMax('');setZone('');}}>Affitta</button></div><div className="id-search-fields"><label>Comune<select aria-label="Comune"><option>Carmagnola (TO)</option></select></label><label>Via o zona<input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Es. San Bernardo"/></label><label>{market==='sale'?'Prezzo massimo (€)':'Canone massimo (€/mese)'}<input type="number" min="0" value={max} onChange={e=>setMax(e.target.value)} placeholder="Nessun limite"/></label><Button>Cerca casa <ArrowRight size={18}/></Button></div><small>La ricerca è attiva su Carmagnola. Troverai altri filtri nei risultati.</small></form></section>
- <section className="container id-benefits" id="come-funziona">{benefits.map(({Icon,title,text},i)=><article key={title}><div><Icon size={23}/><span>0{i+1}</span></div><h2>{title}</h2><p>{text}</p></article>)}</section>
- <section className="container id-map-section" id="mappa"><div className="portal-section-heading"><div><p className="eyebrow">UN TERRITORIO, TANTE POSSIBILITÀ</p><h2>La tua ricerca prende forma sulla mappa.</h2><p>Scegli una zona. Apri un prezzo per conoscere l’immobile.</p></div><Link className="outline-button" href={route}>Tutti i filtri <ArrowRight size={18}/></Link></div><PurchaseMap listings={listings} zone={zone} onZone={setZone} market={market}/>{zone&&<Button variant="secondary" onClick={()=>setZone('')}>Mostra tutte le zone</Button>}<div className="id-data-note" id="dati"><div><Badge>Dati territoriali · BDTRE</Badge><h3>Conoscere i luoghi, prima di attribuire un valore.</h3><p>Il database di Carmagnola contiene 4.367 accessi/civici, 8.496 edifici e 526 elementi stradali, oltre al confine comunale. Descrivono il territorio: non sono appartamenti, compravendite o prezzi di mercato.</p></div><div><strong>Prezzi di mercato</strong><p>Non ancora disponibili. I prezzi sulla mappa sono richieste degli annunci o valori demo indicati come tali.</p></div></div></section>
- <section className="portal-section container"><div className="portal-section-heading"><div><p className="eyebrow">IN VETRINA</p><h2>{market==='sale'?'Case da conoscere, a Carmagnola.':'Uno spazio da vivere in affitto.'}</h2><p>{market==='sale'?'Un annuncio da fonte reale e proposte dimostrative, chiaramente distinte.':'Catalogo dimostrativo: queste proposte non sono offerte reali.'}</p></div><Link className="outline-button" href={route}>Vedi tutti <ArrowRight size={18}/></Link></div><div className="portal-grid">{featured.map(l=><PortalCard listing={l} key={l.id}/>)}</div></section><div className="container" id="estimate"><EstimatePlaceholder/></div></main></PortalShell>;
+
+const benefits = [
+  { Icon: FileSearch, title: 'Annuncio', text: 'Informazioni dichiarate chiaramente riconoscibili.' },
+  { Icon: Layers, title: 'Territorio', text: 'Dati pubblici e contesto della zona.' },
+  { Icon: ScanLine, title: 'HouseID Estimate', text: 'Analisi del prezzo quando il motore sarà disponibile.' },
+];
+
+export function PortalHome() {
+  const [market, setMarket] = useState<Market>('sale');
+  const [query, setQuery] = useState('');
+  const [max, setMax] = useState('');
+  const [zone, setZone] = useState('');
+  const router = useRouter();
+  const listings = useMemo(() => catalogue.filter(l => l.market === market && (!zone || l.areaId === zone)), [market, zone]);
+  const featured = useMemo(() => catalogue.filter(l => l.market === market)
+    .sort((a, b) => Number(b.status === 'real') - Number(a.status === 'real') || Number(!!b.sponsored) - Number(!!a.sponsored))
+    .slice(0, 4), [market]);
+  const route = market === 'sale' ? '/acquisto' : '/affitto';
+
+  function changeMarket(value: Market) { setMarket(value); setMax(''); setZone(''); }
+
+  return <PortalShell>
+    <main id="contenuto" className="product-home">
+      <section className="id-hero">
+        <div className="container id-hero-grid">
+          <div className="id-hero-copy">
+            <Badge><MapPin size={14}/>Si parte da Carmagnola</Badge>
+            <h1>Trova casa.<br/><em>Capisci il prezzo.</em></h1>
+            <p className="id-hero-description">Cerca immobili a Carmagnola e scopri più informazioni per scegliere meglio.</p>
+          </div>
+          <figure className="id-hero-photo">
+            <img src="/images/houseid-editorial-living-room.png" width={1536} height={1024}
+              alt="Interno luminoso con soggiorno e grandi finestre, immagine illustrativa generata con AI" fetchPriority="high"/>
+            <figcaption>Immagine illustrativa · AI</figcaption>
+          </figure>
+        </div>
+        <form className="container id-search" onSubmit={e => {
+          e.preventDefault();
+          const params = new URLSearchParams();
+          if (query) params.set('q', query);
+          if (max) params.set('max', max);
+          router.push(route + '?' + params.toString());
+        }}>
+          <div className="portal-tabs" aria-label="Tipo di ricerca">
+            <button type="button" aria-pressed={market === 'sale'} onClick={() => changeMarket('sale')}>Acquista</button>
+            <button type="button" aria-pressed={market === 'rent'} onClick={() => changeMarket('rent')}>Affitto</button>
+          </div>
+          <div className="id-search-fields">
+            <label>Comune<select aria-label="Comune"><option>Carmagnola (TO)</option></select></label>
+            <label className="id-search-query">Via o zona<input value={query} onChange={e => setQuery(e.target.value)} placeholder="Es. San Bernardo"/></label>
+            <label>{market === 'sale' ? 'Prezzo massimo (€)' : 'Canone massimo (€/mese)'}<input type="number" min="0" value={max} onChange={e => setMax(e.target.value)} placeholder="Nessun limite"/></label>
+            <Button>Cerca <ArrowRight size={18}/></Button>
+          </div>
+        </form>
+      </section>
+
+      <div className="id-product-sections">
+        <section className="container id-map-section" id="mappa">
+          <div className="portal-section-heading">
+            <div><h2>Esplora Carmagnola</h2><p>Scegli una zona, poi apri un annuncio.</p></div>
+            <Link className="outline-button" href={route}>Tutti i filtri <ArrowRight size={18}/></Link>
+          </div>
+          <PurchaseMap listings={listings} zone={zone} onZone={setZone} market={market}/>
+          {zone && <Button variant="secondary" onClick={() => setZone('')}>Mostra tutte le zone</Button>}
+        </section>
+        <section className="portal-section container id-featured">
+          <div className="portal-section-heading">
+            <div><h2>{market === 'sale' ? 'Immobili in evidenza' : 'In affitto a Carmagnola'}</h2>
+              <p>{market === 'sale' ? 'Annunci da fonte reale e proposte demo, sempre distinti.' : 'Proposte demo: non sono offerte reali.'}</p></div>
+            <Link className="outline-button" href={route}>Vedi tutti <ArrowRight size={18}/></Link>
+          </div>
+          <div className="portal-grid">{featured.map(l => <PortalCard listing={l} key={l.id}/>)}</div>
+        </section>
+      </div>
+
+      <section className="container id-why" aria-labelledby="why-title">
+        <h2 id="why-title">Perché HouseID</h2>
+        <div className="id-benefits">{benefits.map(({Icon, title, text}) => <article key={title}>
+          <Icon size={23}/><div><h3>{title}</h3><p>{text}</p></div>
+        </article>)}</div>
+      </section>
+      <section className="container id-estimate-teaser" id="estimate" aria-labelledby="estimate-teaser-title">
+        <ScanLine size={28}/><div><Badge>HouseID Estimate · In sviluppo</Badge>
+          <h2 id="estimate-teaser-title">Non fermarti al prezzo richiesto.</h2>
+          <p>Stiamo costruendo un sistema che confronterà il prezzo dell’annuncio con i dati del mercato locale.</p>
+        </div>
+      </section>
+    </main>
+  </PortalShell>;
 }
